@@ -1,67 +1,3 @@
-<script>
-import { computed, ref } from "vue";
-import ToastError from "./ToastError.vue";
-import { languageCodes } from "../utils/languageCodes.js";
-export default {
-  name: "CountryItem",
-  components: { ToastError },
-  props: {
-    country: {
-      type: Object,
-      required: true,
-    },
-  },
-  async setup({ country }) {
-    const errors = ref([]);
-    const capitals = computed(() => {
-      try {
-        return country.capital && country.capital.length > 0
-          ? country.capital[0]
-          : "None";
-      } catch (error) {
-        errors.value.push(`No capital on ${country.name.common}`);
-      }
-    });
-    const continents = computed(() => {
-      try {
-        return country.continents.length < 2
-          ? country.continents[0]
-          : country.continents.join(", ");
-      } catch (error) {
-        errors.value.push(`No continents on ${country.name.common}`);
-      }
-    });
-    const languages = computed(() => {
-      try {
-        return country.languages && Object.values(country.languages).length < 2
-          ? Object.values(country.languages)[0]
-          : Object.values(country.languages).join(", ");
-      } catch (error) {
-        errors.value.push(`No languages on ${country.name.common}`);
-      }
-    });
-    const translatedLang = computed(() => {
-      try {
-        return languageCodes.find(
-          (item) => item.name === Object.values(country.languages)[0]
-        ).code;
-      } catch (e) {
-        return "n/a";
-      }
-    });
-
-    return {
-      capitals,
-      continents,
-      languages,
-      errors,
-      translatedLang,
-    };
-  },
-  components: { ToastError },
-};
-</script>
-
 <template>
   <ToastError v-if="errors.length > 0" :message="errors[0]" />
   <router-link :to="country.cca2" v-else>
@@ -101,3 +37,70 @@ export default {
     </div>
   </router-link>
 </template>
+
+<script>
+import { computed, ref } from "vue";
+import ToastError from "./ToastError.vue";
+import { languageCodes } from "../utils/languageCodes.js";
+export default {
+  name: "CountryItem",
+  components: { ToastError },
+  props: {
+    country: {
+      type: Object,
+      required: true,
+    },
+  },
+  async setup({ country }) {
+    const errors = ref([]);
+
+    const capitals = computed(() => {
+      try {
+        return country.capital && country.capital.length > 0
+          ? country.capital[0]
+          : "None";
+      } catch (error) {
+        errors.value.push(`No capital on ${country.name.common}`);
+      }
+    });
+
+    const continents = computed(() => {
+      try {
+        return country.continents.length < 2
+          ? country.continents[0]
+          : country.continents.join(", ");
+      } catch (error) {
+        errors.value.push(`No continents on ${country.name.common}`);
+      }
+    });
+
+    const languages = computed(() => {
+      try {
+        return country.languages && Object.values(country.languages).length < 2
+          ? Object.values(country.languages)[0]
+          : Object.values(country.languages).join(", ");
+      } catch (error) {
+        errors.value.push(`No languages on ${country.name.common}`);
+      }
+    });
+
+    const translatedLang = computed(() => {
+      try {
+        return languageCodes.find(
+          (item) => item.name === Object.values(country.languages)[0]
+        ).code;
+      } catch (e) {
+        return "n/a";
+      }
+    });
+
+    return {
+      capitals,
+      continents,
+      languages,
+      errors,
+      translatedLang,
+    };
+  },
+};
+</script>

@@ -6,15 +6,15 @@
         <CountryItem :country="country" />
       </li>
     </ul>
-    <button v-if="currentPage < nPages" @click="uploadItems">Show more</button>
+    <button v-if="currentPage < nPages" @click="uploadItems">Load more</button>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import { getCountriesList } from "../utils/countryApi.js";
-import CountryItem from "./CountryItem.vue";
-import ToastError from "./ToastError.vue";
+import CountryItem from "../components/CountryItem.vue";
+import ToastError from "../components/ToastError.vue";
 
 export default {
   name: "CountryListItems",
@@ -52,9 +52,9 @@ export default {
     return {
       countries,
       error,
-      uploadItems,
       nPages,
       currentPage,
+      uploadItems,
     };
   },
 };
