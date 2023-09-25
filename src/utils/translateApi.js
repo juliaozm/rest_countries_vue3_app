@@ -1,9 +1,11 @@
 import axios from "axios";
+const googleKey = import.meta.env.VITE_GOOGLE_KEY;
+
 const translateApi = axios.create({
   baseURL: "https://google-translate1.p.rapidapi.com",
   headers: {
     "content-type": "application/x-www-form-urlencoded",
-    "X-RapidAPI-Key": "bfcc5c731emshe5b92b815d30ae7p156066jsne2fe9e5cbbeb",
+    "X-RapidAPI-Key": googleKey,
     "X-RapidAPI-Host": "google-translate1.p.rapidapi.com",
   },
 });
