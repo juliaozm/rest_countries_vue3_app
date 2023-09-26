@@ -1,11 +1,38 @@
 <template>
-  <div class="nav">
-    <router-link to="/">Home</router-link>
-  </div>
-
-  <div class="container mx-auto">
-    <router-view></router-view>
-  </div>
+  <header class="w-full p-4">
+    <nav class="flex border-b">
+      <div v-for="route in navRoutes" class="mr-1">
+        <router-link
+          :to="route.path"
+          class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
+          :class="{
+            'border-l border-t border-r rounded-t text-blue-700 -mb-px':
+              route.path === $route.path,
+          }"
+          >{{ route.name }}</router-link
+        >
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="container mx-auto">
+      <router-view> </router-view>
+    </div>
+  </main>
+  <footer></footer>
 </template>
 
-<script></script>
+<script>
+import { ref } from "vue";
+export default {
+  setup() {
+    const navRoutes = ref([
+      { path: "/", name: "Home" },
+      { path: "/about", name: "About" },
+      { path: "/login", name: "Login" },
+    ]);
+
+    return { navRoutes };
+  },
+};
+</script>
