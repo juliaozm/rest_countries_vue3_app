@@ -29,3 +29,13 @@ export const getCountryByCode = async (code) => {
     throw new Error(`Failed to fetch data about ${code} country`);
   }
 };
+
+export const getCountryByName = async (name) => {
+  try {
+    const res = await countryApi.get(`/name/${name}`);
+    return res.data;
+  } catch (error) {
+    console.log(error.message);
+    throw new Error(`Failed to find "${name}" country`);
+  }
+};
