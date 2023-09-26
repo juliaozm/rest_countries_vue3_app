@@ -11,7 +11,15 @@
       <p>Loading countries...</p>
     </template>
   </Suspense>
-  <button v-if="currentPage < nPages" @click="uploadItems">Load more</button>
+  <div class="w-full flex justify-center items-center p-4">
+    <button
+      v-if="currentPage < nPages"
+      @click="uploadItems"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+    >
+      Load more
+    </button>
+  </div>
 </template>
 
 <script>
