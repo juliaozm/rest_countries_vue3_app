@@ -1,6 +1,6 @@
 <template>
   <ToastError v-if="errors.length > 0" :message="errors[0]" />
-  <router-link :to="country.cca2" v-else>
+  <router-link :to="country.cca2">
     <div class="p-4 border h-full flex flex-col">
       <div class="h-1/2 m-2">
         <img
@@ -17,7 +17,7 @@
             type="checkbox"
             readonly
             disabled
-            checked="country.independent"
+            :checked="country.independent"
           />
         </p>
         <p>Capital: {{ capitals }}</p>
