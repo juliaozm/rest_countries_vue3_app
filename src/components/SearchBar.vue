@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex justify-center items-center">
-    <form class="p-4 flex" @submit.prevent="submitSearch">
+    <form class="p-4 flex" @submit.prevent="getCountriesBySearch(search)">
       <input
         type="text"
         v-model.trim.lazy="search"
@@ -22,29 +22,16 @@ import { ref } from "vue";
 export default {
   name: "SearchBar",
   props: {
-    getSearch: {
-      type: Function,
-      required: true,
-    },
-    getCountries: {
+    getCountriesBySearch: {
       type: Function,
       required: true,
     },
   },
-  setup({ getSearch, getCountries }) {
-    const search = ref("");
-
-    const submitSearch = async () => {
-      if (!search.value || search.value === "") {
-        await getCountries();
-      } else {
-        await getSearch(search.value);
-      }
-    };
+  setup() {
+    const search = ref(null);
 
     return {
       search,
-      submitSearch,
     };
   },
 };

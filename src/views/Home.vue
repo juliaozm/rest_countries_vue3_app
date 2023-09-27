@@ -1,8 +1,8 @@
 <template>
-  <SearchBar
-    :getSearch="getCountriesBySearchFromAPI"
-    :getCountries="getCountriesFromAPI"
-  />
+  <SearchBar :getCountriesBySearch="getCountriesBySearchFromAPI" />
+  <div>
+    <RegionFilter :getCountriesByRegion="getCountriesByRegionFromAPI" />
+  </div>
   <Suspense>
     <template #default>
       <CountryListItems :countries="limitedList" :error="error" />
@@ -24,8 +24,13 @@
 
 <script>
 import { defineAsyncComponent, ref, watch, computed } from "vue";
-import { getCountryByName, getCountriesList } from "../utils/countryApi";
+import {
+  getCountryByName,
+  getCountriesList,
+  getCountryByRegion,
+} from "../utils/countryApi";
 import SearchBar from "../components/SearchBar.vue";
+import RegionFilter from "../components/RegionFilter.vue";
 
 const AsyncCountryListItems = defineAsyncComponent(() =>
   import("../components/CountryListItems.vue")
@@ -36,6 +41,7 @@ export default {
   components: {
     CountryListItems: AsyncCountryListItems,
     SearchBar,
+    RegionFilter,
   },
   setup() {
     const countries = ref([]);
@@ -58,8 +64,26 @@ export default {
     const getCountriesBySearchFromAPI = async (name) => {
       error.value = "";
       try {
-        const data = await getCountryByName(name);
-        await updateCountriesData(data);
+        if (!name || name === "") {
+          await getCountriesFromAPI();
+        } else {
+          const data = await getCountryByName(name);
+          await updateCountriesData(data);
+        }
+      } catch (e) {
+        error.value = e.message;
+      }
+    };
+
+    const getCountriesByRegionFromAPI = async (region) => {
+      error.value = "";
+      try {
+        if (region) {
+          const data = await getCountryByRegion(region);
+          await updateCountriesData(data);
+        } else {
+          await getCountriesFromAPI();
+        }
       } catch (e) {
         error.value = e.message;
       }
@@ -105,6 +129,7 @@ export default {
       uploadItems,
       getCountriesFromAPI,
       getCountriesBySearchFromAPI,
+      getCountriesByRegionFromAPI,
     };
   },
 };

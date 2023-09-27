@@ -39,3 +39,23 @@ export const getCountryByName = async (name) => {
     throw new Error(`Failed to find "${name}" country`);
   }
 };
+
+export const getRegions = async () => {
+  try {
+    const res = await countryApi.get(`all?fields=subregion`);
+    return res.data;
+  } catch (error) {
+    console.log(error.message);
+    throw new Error(`Failed to fetch regions`);
+  }
+};
+
+export const getCountryByRegion = async (region) => {
+  try {
+    const res = await countryApi.get(`subregion/${region}`);
+    return res.data;
+  } catch (error) {
+    console.log(error.message);
+    throw new Error(`Failed to find countries in ${region}`);
+  }
+};
