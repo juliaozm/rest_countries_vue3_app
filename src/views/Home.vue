@@ -1,7 +1,11 @@
 <template>
   <SearchBar :getCountriesBySearch="getCountriesBySearchFromAPI" />
-  <div>
+  <div class="flex justify-end flex-wrap">
     <RegionFilter :getCountriesByRegion="getCountriesByRegionFromAPI" />
+    <CarSideFilter
+      :getCountriesByCarSide="getCountriesByCarSideFromAPI"
+      :error="error"
+    />
   </div>
   <Suspense>
     <template #default>
@@ -31,6 +35,7 @@ import {
 } from "../utils/countryApi";
 import SearchBar from "../components/SearchBar.vue";
 import RegionFilter from "../components/RegionFilter.vue";
+import CarSideFilter from "../components/CarSideFilter.vue";
 
 const AsyncCountryListItems = defineAsyncComponent(() =>
   import("../components/CountryListItems.vue")
@@ -42,6 +47,7 @@ export default {
     CountryListItems: AsyncCountryListItems,
     SearchBar,
     RegionFilter,
+    CarSideFilter,
   },
   setup() {
     const countries = ref([]);
@@ -89,9 +95,23 @@ export default {
       }
     };
 
+    const getCountriesByCarSideFromAPI = async (side) => {
+      error.value = "";
+      try {
+        let data = await getCountriesList();
+        if (side) {
+          data = data.filter((item) => item.car.side === side);
+        }
+        await updateCountriesData(data);
+      } catch (e) {
+        error.value = e.message;
+      }
+    };
+
     const updateCountriesData = async (data) => {
       countries.value = data;
       nPages.value = Math.ceil(data.length / itemsPerPage.value);
+      console.log(nPages.value);
     };
 
     const indexOfLastItem = computed(() => {
@@ -130,6 +150,7 @@ export default {
       getCountriesFromAPI,
       getCountriesBySearchFromAPI,
       getCountriesByRegionFromAPI,
+      getCountriesByCarSideFromAPI,
     };
   },
 };

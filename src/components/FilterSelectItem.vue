@@ -4,8 +4,9 @@
     :items="items"
     :placeholder="placeholder"
     clearable
+    :item-title="itemTitle"
+    :item-value="itemValue"
     :clear-icon="CloseCircleIcon"
-    :loading="isLoading"
     variant="outlined"
     bg-color="#fff"
     color="primary"
@@ -25,6 +26,12 @@ export default {
     value: {
       type: String,
     },
+    itemTitle: {
+      type: String,
+    },
+    itemValue: {
+      type: String,
+    },
     items: {
       type: Array,
       default: () => [],
@@ -32,10 +39,6 @@ export default {
     placeholder: {
       type: String,
       default: "",
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
     },
   },
   setup() {

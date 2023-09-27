@@ -4,8 +4,7 @@
     <FilterSelectItem
       v-model="selectedRegion"
       :items="regions"
-      placeholder="Select region"
-      :isLoading="isLoading"
+      placeholder="Select a region"
     />
   </div>
 </template>
@@ -28,12 +27,10 @@ export default {
   setup({ getCountriesByRegion }) {
     const regions = ref([]);
     const selectedRegion = ref(null);
-    const isLoading = ref(false);
     const error = ref("");
 
     const getListOfRegions = async () => {
       try {
-        isLoading.value = true;
         const data = await getRegions();
         const listofregion = data
           .map((i) => i.subregion)
@@ -42,10 +39,6 @@ export default {
               array.indexOf(value) === index && value != ""
           )
           .sort();
-
-        setTimeout(() => {
-          isLoading.value = false;
-        }, 300);
 
         regions.value = listofregion;
       } catch (e) {
@@ -64,7 +57,6 @@ export default {
       regions,
       selectedRegion,
       getListOfRegions,
-      isLoading,
       error,
     };
   },
