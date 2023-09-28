@@ -6,6 +6,7 @@
       :getCountriesByCarSide="getCountriesByCarSideFromAPI"
       :error="error"
     />
+    <CheckedFilter :getCheckedCountries="getCountriesSupportTranslateFromAPI" />
   </div>
   <Suspense>
     <template #default>
@@ -36,6 +37,8 @@ import {
 import SearchBar from "../components/SearchBar.vue";
 import RegionFilter from "../components/RegionFilter.vue";
 import CarSideFilter from "../components/CarSideFilter.vue";
+import CheckedFilter from "../components/CheckedFilter.vue";
+import { languageCodes } from "../utils/languageCodes";
 
 const AsyncCountryListItems = defineAsyncComponent(() =>
   import("../components/CountryListItems.vue")
@@ -48,6 +51,7 @@ export default {
     SearchBar,
     RegionFilter,
     CarSideFilter,
+    CheckedFilter,
   },
   setup() {
     const countries = ref([]);
@@ -108,6 +112,26 @@ export default {
       }
     };
 
+    const getCountriesSupportTranslateFromAPI = async (isTranslated) => {
+      error.value = "";
+      const languageNames = languageCodes.map((lang) => lang.name);
+      try {
+        let data = await getCountriesList();
+        if (isTranslated) {
+          data = data.filter((item) => {
+            return (
+              item.languages !== undefined &&
+              languageNames.includes(Object.values(item.languages)[0]) &&
+              Object.values(item.languages)[0] !== "English"
+            );
+          });
+        }
+        await updateCountriesData(data);
+      } catch (e) {
+        error.value = e.message;
+      }
+    };
+
     const updateCountriesData = async (data) => {
       countries.value = data;
       nPages.value = Math.ceil(data.length / itemsPerPage.value);
@@ -151,6 +175,7 @@ export default {
       getCountriesBySearchFromAPI,
       getCountriesByRegionFromAPI,
       getCountriesByCarSideFromAPI,
+      getCountriesSupportTranslateFromAPI,
     };
   },
 };
