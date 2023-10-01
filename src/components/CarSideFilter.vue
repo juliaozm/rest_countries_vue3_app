@@ -1,5 +1,4 @@
 <template>
-  <ToastError v-if="error" :message="error" />
   <div class="w-full sm:w-1/3 md:w-1/4">
     <FilterSelectItem
       v-model="selectedCarSide"
@@ -13,20 +12,15 @@
 
 <script>
 import { ref, watch } from "vue";
-import ToastError from "./ToastError.vue";
 import FilterSelectItem from "./FilterSelectItem.vue";
 
 export default {
   name: "CarSideFilter",
-  components: { FilterSelectItem, ToastError },
+  components: { FilterSelectItem },
   props: {
     getCountriesByCarSide: {
       type: Function,
       required: true,
-    },
-    error: {
-      type: String,
-      default: null,
     },
   },
   setup({ getCountriesByCarSide }) {

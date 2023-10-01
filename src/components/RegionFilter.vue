@@ -1,5 +1,4 @@
 <template>
-  <ToastError v-if="error" :message="error" />
   <div class="w-full sm:w-1/3 md:w-1/4">
     <FilterSelectItem
       v-model="selectedRegion"
@@ -10,14 +9,13 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
-import { getRegions } from "../utils/countryApi";
-import ToastError from "./ToastError.vue";
+import { ref, watch, inject } from "vue";
+import { getRegions } from "../api/countryApi";
 import FilterSelectItem from "./FilterSelectItem.vue";
 
 export default {
   name: "RegionFilter",
-  components: { FilterSelectItem, ToastError },
+  components: { FilterSelectItem },
   props: {
     getCountriesByRegion: {
       type: Function,
@@ -28,8 +26,10 @@ export default {
     const regions = ref([]);
     const selectedRegion = ref(null);
     const error = ref("");
+    const errorNotification = inject("errorNotification");
 
     const getListOfRegions = async () => {
+      error.value = "";
       try {
         const data = await getRegions();
         const listofregion = data
@@ -39,10 +39,11 @@ export default {
               array.indexOf(value) === index && value != ""
           )
           .sort();
-
         regions.value = listofregion;
       } catch (e) {
+        console.log(e);
         error.value = e.message;
+        errorNotification.emit("catch-error", error.value);
       }
     };
 

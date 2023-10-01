@@ -1,8 +1,8 @@
 <template>
   <div class="w-full sm:w-1/3 md:w-1/4">
-    <v-checkbox v-model="isChecked" label="Support translation" color="primary">
+    <v-checkbox v-model="isChecked" color="primary">
       <template #label>
-        <span class="text-lg text-gray-500">Support translation</span>
+        <span class="text-lg text-gray-500">{{ label }}</span>
       </template>
     </v-checkbox>
   </div>
@@ -16,6 +16,10 @@ export default {
   props: {
     getCheckedCountries: {
       type: Function,
+      required: true,
+    },
+    label: {
+      type: String,
       required: true,
     },
   },

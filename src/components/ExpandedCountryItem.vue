@@ -1,5 +1,5 @@
 <template>
-  <ToastError v-if="error" :message="error"></ToastError>
+  <div v-if="error">{{ error }}</div>
   <div v-else>
     <h1>{{ country.name.common }}</h1>
     <p>Area: {{ country.area }}, population: {{ country.population }}</p>
@@ -14,14 +14,14 @@
   </div>
 </template>
 <script>
-import { ref, computed } from "vue";
-import { getCountryByCode } from "../utils/countryApi";
-import { languageCodes } from "../utils/languageCodes.js";
+import { ref, computed, inject } from "vue";
+import { getCountryByCode } from "../api/countryApi";
+import { languageCodes } from "../assets/data/languageCodes.js";
 import TranslateForm from "../components/TranslateForm.vue";
-import ToastError from "../components/ToastError.vue";
+
 export default {
   name: "ExpandedCountryItem",
-  components: { TranslateForm, ToastError },
+  components: { TranslateForm },
   props: {
     id: String,
     required: true,
@@ -29,14 +29,19 @@ export default {
   async setup({ id }) {
     const country = ref({});
     const error = ref("");
+    const errorNotification = inject("errorNotification");
 
     const getDataFromAPI = async (id) => {
+      error.value = "";
       try {
         country.value = await getCountryByCode(id);
       } catch (e) {
+        console.log(e);
         error.value = e.message;
+        errorNotification.emit("catch-error", error.value);
       }
     };
+
     await getDataFromAPI(id);
 
     const translatedLang = computed(() => {

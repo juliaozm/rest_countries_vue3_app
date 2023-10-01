@@ -1,5 +1,4 @@
 <template>
-  <ToastError v-if="errors.length > 0" :message="errors[0]" />
   <router-link :to="country.cca2">
     <div class="p-4 border h-full flex flex-col">
       <div class="h-1/2 m-2">
@@ -39,12 +38,11 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
-import ToastError from "./ToastError.vue";
-import { languageCodes } from "../utils/languageCodes.js";
+import { computed, inject } from "vue";
+import { languageCodes } from "../assets/data/languageCodes.js";
 export default {
   name: "CountryItem",
-  components: { ToastError },
+
   props: {
     country: {
       type: Object,
@@ -52,35 +50,62 @@ export default {
     },
   },
   async setup({ country }) {
-    const errors = ref([]);
+    const errorNotification = inject("errorNotification");
 
     const capitals = computed(() => {
       try {
-        return country.capital && country.capital.length > 0
-          ? country.capital[0]
-          : "None";
-      } catch (error) {
-        errors.value.push(`No capital on ${country.name.common}`);
+        const capital = country.capital;
+        if (capital && Array.isArray(capital) && capital.length > 0) {
+          return capital[0];
+        } else {
+          return "None";
+        }
+      } catch (e) {
+        console.log(e);
+        errorNotification.emit(
+          "catch-error",
+          `No capital on ${country.name.common}`
+        );
       }
     });
 
     const continents = computed(() => {
       try {
-        return country.continents.length < 2
-          ? country.continents[0]
-          : country.continents.join(", ");
-      } catch (error) {
-        errors.value.push(`No continents on ${country.name.common}`);
+        const continents = country.continents;
+        if (continents && Array.isArray(continents) && continents.length > 0) {
+          return continents < 2 ? continents[0] : continents.join(", ");
+        } else {
+          return "None";
+        }
+      } catch (e) {
+        console.log(e);
+        errorNotification.emit(
+          "catch-error",
+          `No continents on ${country.name.common}`
+        );
       }
     });
 
     const languages = computed(() => {
       try {
-        return country.languages && Object.values(country.languages).length < 2
-          ? Object.values(country.languages)[0]
-          : Object.values(country.languages).join(", ");
-      } catch (error) {
-        errors.value.push(`No languages on ${country.name.common}`);
+        if (country.languages) {
+          const languageValues = Object.values(country.languages);
+          if (languageValues?.length > 0) {
+            return languageValues.length < 2
+              ? languageValues[0]
+              : languageValues.join(", ");
+          } else {
+            return "None";
+          }
+        } else {
+          return "None";
+        }
+      } catch (e) {
+        console.log(e);
+        errorNotification.emit(
+          "catch-error",
+          `No languages on ${country.name.common}`
+        );
       }
     });
 
@@ -90,6 +115,7 @@ export default {
           (item) => item.name === Object.values(country.languages)[0]
         ).code;
       } catch (e) {
+        console.log(e);
         return "n/a";
       }
     });
@@ -98,7 +124,6 @@ export default {
       capitals,
       continents,
       languages,
-      errors,
       translatedLang,
     };
   },

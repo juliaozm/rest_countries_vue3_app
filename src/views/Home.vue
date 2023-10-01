@@ -1,44 +1,54 @@
 <template>
-  <SearchBar :getCountriesBySearch="getCountriesBySearchFromAPI" />
-  <div class="flex justify-end flex-wrap">
-    <RegionFilter :getCountriesByRegion="getCountriesByRegionFromAPI" />
-    <CarSideFilter
-      :getCountriesByCarSide="getCountriesByCarSideFromAPI"
-      :error="error"
-    />
-    <CheckedFilter :getCheckedCountries="getCountriesSupportTranslateFromAPI" />
-  </div>
-  <Suspense>
-    <template #default>
-      <CountryListItems :countries="limitedList" :error="error" />
-    </template>
-    <template #fallback>
-      <p>Loading countries...</p>
-    </template>
-  </Suspense>
-  <div class="w-full flex justify-center items-center p-4">
-    <button
-      v-if="currentPage < nPages"
-      @click="uploadItems"
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
-    >
-      Load more
-    </button>
-  </div>
+  <section>
+    <SearchBar :getCountriesBySearch="getCountriesBySearchFromAPI" />
+    <div class="flex align-items justify-between flex-wrap">
+      <RegionFilter :getCountriesByRegion="getCountriesByRegionFromAPI" />
+      <CarSideFilter :getCountriesByCarSide="getCountriesByCarSideFromAPI" />
+
+      <CheckedFilter
+        label="Support translation"
+        :getCheckedCountries="getCountriesSupportTranslateFromAPI"
+      />
+      <CheckedFilter
+        label="Select independent"
+        :getCheckedCountries="getIndependentCountriesFromAPI"
+      />
+    </div>
+  </section>
+  <section v-if="errorList">{{ errorList }}</section>
+  <section v-else>
+    <Suspense>
+      <template #default>
+        <CountryListItems :countries="limitedList" />
+      </template>
+      <template #fallback>
+        <p>Loading countries...</p>
+      </template>
+    </Suspense>
+    <div class="w-full flex justify-center items-center p-4">
+      <button
+        v-if="currentPage < nPages"
+        @click="uploadItems"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+      >
+        Load more
+      </button>
+    </div>
+  </section>
 </template>
 
 <script>
-import { defineAsyncComponent, ref, watch, computed } from "vue";
+import { defineAsyncComponent, ref, watch, computed, inject } from "vue";
 import {
   getCountryByName,
   getCountriesList,
   getCountryByRegion,
-} from "../utils/countryApi";
+} from "../api/countryApi";
 import SearchBar from "../components/SearchBar.vue";
 import RegionFilter from "../components/RegionFilter.vue";
 import CarSideFilter from "../components/CarSideFilter.vue";
 import CheckedFilter from "../components/CheckedFilter.vue";
-import { languageCodes } from "../utils/languageCodes";
+import { languageCodes } from "../assets/data/languageCodes";
 
 const AsyncCountryListItems = defineAsyncComponent(() =>
   import("../components/CountryListItems.vue")
@@ -55,24 +65,26 @@ export default {
   },
   setup() {
     const countries = ref([]);
-    const error = ref("");
     const limitedList = ref([]);
     const currentPage = ref(1);
     const nPages = ref(null);
     const itemsPerPage = ref(48);
+    const errorList = ref("");
+    const errorNotification = inject("errorNotification");
 
     const getCountriesFromAPI = async () => {
-      error.value = "";
+      errorList.value = "";
       try {
         const data = await getCountriesList();
         await updateCountriesData(data);
       } catch (e) {
-        error.value = e.message;
+        console.log(e);
+        errorList.value = e.message;
+        errorNotification.emit("catch-error", errorList.value);
       }
     };
 
     const getCountriesBySearchFromAPI = async (name) => {
-      error.value = "";
       try {
         if (!name || name === "") {
           await getCountriesFromAPI();
@@ -81,12 +93,12 @@ export default {
           await updateCountriesData(data);
         }
       } catch (e) {
-        error.value = e.message;
+        console.log(e);
+        errorNotification.emit("catch-error", e.message);
       }
     };
 
     const getCountriesByRegionFromAPI = async (region) => {
-      error.value = "";
       try {
         if (region) {
           const data = await getCountryByRegion(region);
@@ -95,12 +107,12 @@ export default {
           await getCountriesFromAPI();
         }
       } catch (e) {
-        error.value = e.message;
+        console.log(e);
+        errorNotification.emit("catch-error", e.message);
       }
     };
 
     const getCountriesByCarSideFromAPI = async (side) => {
-      error.value = "";
       try {
         let data = await getCountriesList();
         if (side) {
@@ -108,12 +120,15 @@ export default {
         }
         await updateCountriesData(data);
       } catch (e) {
-        error.value = e.message;
+        console.log(e);
+        errorNotification.emit(
+          "catch-error",
+          `Failed to find countries by a side of the traffic`
+        );
       }
     };
 
     const getCountriesSupportTranslateFromAPI = async (isTranslated) => {
-      error.value = "";
       const languageNames = languageCodes.map((lang) => lang.name);
       try {
         let data = await getCountriesList();
@@ -128,14 +143,33 @@ export default {
         }
         await updateCountriesData(data);
       } catch (e) {
-        error.value = e.message;
+        console.log(e);
+        errorNotification.emit(
+          "catch-error",
+          `Failed to find countries which support a translator`
+        );
+      }
+    };
+
+    const getIndependentCountriesFromAPI = async (isIndependent) => {
+      try {
+        let data = await getCountriesList();
+        if (isIndependent) {
+          data = data.filter((item) => item.independent);
+        }
+        await updateCountriesData(data);
+      } catch (e) {
+        console.log(e);
+        errorNotification.emit(
+          "catch-error",
+          `Failed to find independent countries`
+        );
       }
     };
 
     const updateCountriesData = async (data) => {
       countries.value = data;
       nPages.value = Math.ceil(data.length / itemsPerPage.value);
-      console.log(nPages.value);
     };
 
     const indexOfLastItem = computed(() => {
@@ -164,7 +198,7 @@ export default {
     getCountriesFromAPI();
 
     return {
-      error,
+      errorList,
       countries,
       limitedList,
       currentPage,
@@ -176,6 +210,7 @@ export default {
       getCountriesByRegionFromAPI,
       getCountriesByCarSideFromAPI,
       getCountriesSupportTranslateFromAPI,
+      getIndependentCountriesFromAPI,
     };
   },
 };
