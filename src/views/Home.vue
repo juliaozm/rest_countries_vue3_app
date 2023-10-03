@@ -16,23 +16,23 @@
     </div>
   </section>
   <section v-if="errorList">{{ errorList }}</section>
-  <section v-else>
+  <section v-if="allCountries.length > 0">
+    {{ pageCount }}
     <Suspense>
       <template #default>
-        <CountryListItems :countries="limitedList" />
+        <CountryListItems :countries="filteredCountries" />
       </template>
       <template #fallback>
         <p>Loading countries...</p>
       </template>
     </Suspense>
     <div class="w-full flex justify-center items-center p-4">
-      <button
+      <!-- <button
         v-if="currentPage < nPages"
-        @click="uploadItems"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
       >
         Load more
-      </button>
+      </button> -->
     </div>
   </section>
 </template>
@@ -64,19 +64,24 @@ export default {
     CheckedFilter,
   },
   setup() {
-    const countries = ref([]);
-    const limitedList = ref([]);
+    const allCountries = ref([]);
+
+    const translateFilter = ref(false);
+    const independentFilter = ref(false);
+    const regionFilter = ref(false);
+    const carsideFilter = ref(false);
+    const nameFilter = ref(false);
+
     const currentPage = ref(1);
-    const nPages = ref(null);
     const itemsPerPage = ref(48);
+
     const errorList = ref("");
     const errorNotification = inject("errorNotification");
 
     const getCountriesFromAPI = async () => {
       errorList.value = "";
       try {
-        const data = await getCountriesList();
-        await updateCountriesData(data);
+        allCountries.value = await getCountriesList();
       } catch (e) {
         console.log(e);
         errorList.value = e.message;
@@ -84,13 +89,15 @@ export default {
       }
     };
 
+    getCountriesFromAPI();
+
     const getCountriesBySearchFromAPI = async (name) => {
       try {
         if (!name || name === "") {
-          await getCountriesFromAPI();
+          nameFilter.value = false;
         } else {
           const data = await getCountryByName(name);
-          await updateCountriesData(data);
+          nameFilter.value = data;
         }
       } catch (e) {
         console.log(e);
@@ -98,14 +105,9 @@ export default {
       }
     };
 
-    const getCountriesByRegionFromAPI = async (region) => {
+    const getCountriesByRegionFromAPI = async (subregion) => {
       try {
-        if (region) {
-          const data = await getCountryByRegion(region);
-          await updateCountriesData(data);
-        } else {
-          await getCountriesFromAPI();
-        }
+        regionFilter.value = subregion ? subregion : false;
       } catch (e) {
         console.log(e);
         errorNotification.emit("catch-error", e.message);
@@ -114,11 +116,7 @@ export default {
 
     const getCountriesByCarSideFromAPI = async (side) => {
       try {
-        let data = await getCountriesList();
-        if (side) {
-          data = data.filter((item) => item.car.side === side);
-        }
-        await updateCountriesData(data);
+        carsideFilter.value = side ? side : false;
       } catch (e) {
         console.log(e);
         errorNotification.emit(
@@ -129,19 +127,8 @@ export default {
     };
 
     const getCountriesSupportTranslateFromAPI = async (isTranslated) => {
-      const languageNames = languageCodes.map((lang) => lang.name);
       try {
-        let data = await getCountriesList();
-        if (isTranslated) {
-          data = data.filter((item) => {
-            return (
-              item.languages !== undefined &&
-              languageNames.includes(Object.values(item.languages)[0]) &&
-              Object.values(item.languages)[0] !== "English"
-            );
-          });
-        }
-        await updateCountriesData(data);
+        translateFilter.value = isTranslated;
       } catch (e) {
         console.log(e);
         errorNotification.emit(
@@ -153,11 +140,7 @@ export default {
 
     const getIndependentCountriesFromAPI = async (isIndependent) => {
       try {
-        let data = await getCountriesList();
-        if (isIndependent) {
-          data = data.filter((item) => item.independent);
-        }
-        await updateCountriesData(data);
+        independentFilter.value = isIndependent;
       } catch (e) {
         console.log(e);
         errorNotification.emit(
@@ -167,44 +150,75 @@ export default {
       }
     };
 
-    const updateCountriesData = async (data) => {
-      countries.value = data;
-      nPages.value = Math.ceil(data.length / itemsPerPage.value);
-    };
+    const filteredCountries = computed(() => {
+      let filteredCountries = allCountries.value;
 
-    const indexOfLastItem = computed(() => {
-      return currentPage.value * itemsPerPage.value;
-    });
+      if (nameFilter.value) {
+        filteredCountries = nameFilter.value;
+      }
 
-    const indexOfFirstItem = computed(() => {
-      return indexOfLastItem - itemsPerPage.value;
-    });
-
-    const uploadItems = () => {
-      currentPage.value++;
-      getCountriesFromAPI();
-    };
-
-    watch(
-      () => countries.value,
-      (newVal) => {
-        limitedList.value = newVal.slice(
-          indexOfFirstItem.value,
-          indexOfLastItem.value
+      if (regionFilter.value) {
+        filteredCountries = filteredCountries.filter(
+          (country) =>
+            country.subregion && country.subregion === regionFilter.value
         );
       }
-    );
 
-    getCountriesFromAPI();
+      if (translateFilter.value) {
+        const languageNames = languageCodes.map((lang) => lang.name);
+        filteredCountries = filteredCountries.filter((country) => {
+          return (
+            country.languages !== undefined &&
+            languageNames.includes(Object.values(country.languages)[0]) &&
+            Object.values(country.languages)[0] !== "English"
+          );
+        });
+      }
+
+      if (carsideFilter.value) {
+        filteredCountries = filteredCountries.filter(
+          (country) => country.car.side === carsideFilter.value
+        );
+      }
+
+      if (independentFilter.value) {
+        filteredCountries = filteredCountries.filter(
+          (country) => country.independent === independentFilter.value
+        );
+      }
+      return filteredCountries;
+    });
+
+    const pageCount = computed(() => {
+      return Math.ceil(allCountries.value.length / itemsPerPage.value);
+    });
+
+    // const indexOfLastItem = computed(() => {
+    //   return currentPage.value * itemsPerPage.value;
+    // });
+
+    // const indexOfFirstItem = computed(() => {
+    //   return indexOfLastItem - itemsPerPage.value;
+    // });
+
+    // watch(
+    //   () => filteredCountries,
+    //   (newVal) => {
+    //     filteredCountries = newVal.slice(
+    //       indexOfFirstItem.value,
+    //       indexOfLastItem.value
+    //     );
+    //   }
+    // );
 
     return {
-      errorList,
-      countries,
-      limitedList,
+      allCountries,
+      filteredCountries,
       currentPage,
       itemsPerPage,
-      nPages,
-      uploadItems,
+      pageCount,
+      errorList,
+
       getCountriesFromAPI,
       getCountriesBySearchFromAPI,
       getCountriesByRegionFromAPI,
