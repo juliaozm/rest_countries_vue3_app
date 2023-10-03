@@ -25,12 +25,7 @@
         <p>Cars: {{ country.car.side }}-handed</p>
         <p>
           Available to translate:
-          <input
-            type="checkbox"
-            readonly
-            disabled
-            :checked="translatedLang != 'en' && translatedLang != 'n/a'"
-          />
+          <input type="checkbox" readonly disabled :checked="translatedLang" />
         </p>
       </div>
     </div>
@@ -110,13 +105,17 @@ export default {
     });
 
     const translatedLang = computed(() => {
-      try {
-        return languageCodes.find(
-          (item) => item.name === Object.values(country.languages)[0]
-        ).code;
-      } catch (e) {
-        console.log(e);
-        return "n/a";
+      if (country.languages) {
+        const languageValues = Object.values(country.languages);
+        if (languageValues?.length > 0) {
+          const lang = languageCodes.find(
+            (lang) =>
+              lang.name &&
+              lang.name === languageValues[0] &&
+              languageValues[0] !== "English"
+          );
+          return lang ? lang.code : false;
+        }
       }
     });
 
