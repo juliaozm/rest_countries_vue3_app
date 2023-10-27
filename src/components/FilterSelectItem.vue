@@ -7,7 +7,7 @@
     :item-title="itemTitle"
     :item-value="itemValue"
     :clear-icon="CloseCircleIcon"
-    variant="outlined"
+    variant="underlined"
     bg-color="#fff"
     color="primary"
     item-color="primary"

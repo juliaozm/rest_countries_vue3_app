@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <header class="w-full p-4">
-      <nav class="flex border-b">
-        <div v-for="route in navRoutes" class="mr-1">
+    <header class="tw-w-full tw-p-4">
+      <nav class="tw-flex tw-border-b">
+        <div v-for="route in navRoutes" class="tw-mr-1">
           <router-link
             :to="route.path"
-            class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
+            class="tw-bg-white tw-inline-block tw-py-2 tw-px-4 tw-text-gray-500 hover:tw-text-violet-800 tw-font-semibold"
             :class="{
-              'border-l border-t border-r rounded-t text-blue-700 -mb-px':
+              'tw-border-l tw-border-t tw-border-r tw-rounded-t -tw-mb-px':
                 route.path === $route.path,
             }"
             >{{ route.name }}</router-link
@@ -16,10 +16,8 @@
       </nav>
     </header>
     <main>
+      <router-view> </router-view>
       <ToastError />
-      <div class="container mx-auto">
-        <router-view> </router-view>
-      </div>
     </main>
     <footer></footer>
   </div>

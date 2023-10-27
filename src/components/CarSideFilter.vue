@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full sm:w-1/3 md:w-1/4">
+  <div class="tw-w-full md:tw-w-1/2 lg:tw-w-44 sm:tw-mr-4">
     <FilterSelectItem
       v-model="selectedCarSide"
       :items="sides"

@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full sm:w-1/3 md:w-1/4">
-    <v-checkbox v-model="isChecked" color="primary">
+  <div class="tw-w-full sm:tw-w-1/2 md:tw-w-40 sm:tw-mr-4">
+    <v-checkbox v-model="isChecked" color="primary" density="compact">
       <template #label>
-        <span class="text-lg text-gray-500">{{ label }}</span>
+        <span class="tw-text-sm tw-text-gray-500">{{ label }}</span>
       </template>
     </v-checkbox>
   </div>
