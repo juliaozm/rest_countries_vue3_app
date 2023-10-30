@@ -3,6 +3,7 @@ export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     maxWidth: {
+      "1/3": "33.3%",
       "1/4": "25%",
       "1/2": "50%",
       "3/4": "75%",
