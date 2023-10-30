@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const googleKey = import.meta.env.VITE_GOOGLE_KEY;
 
 const translateApi = axios.create({
@@ -13,7 +14,8 @@ const translateApi = axios.create({
 translateApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    return Promise.reject(error.message || "Something went wrong...");
+    console.error("Error from translateApi:", error);
+    return Promise.reject(error);
   }
 );
 
@@ -22,7 +24,9 @@ export const postTranslate = async (data) => {
     const res = await translateApi.post("/language/translate/v2", data);
     return res.data;
   } catch (error) {
-    console.log(error.message);
+    if (error.response.status === 429) {
+      throw new Error("Exceeded the MONTHLY quota on the dev plan");
+    }
     throw new Error("Failed to translate. Please try again");
   }
 };
