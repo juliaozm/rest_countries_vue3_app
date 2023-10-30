@@ -7,7 +7,7 @@ const routes = [
   { path: "/login", name: "Login" },
   {
     path: "/:cca2",
-    component: () => import("../views/ExpandedCountryWrapper.vue"),
+    component: () => import("../views/CountryView.vue"),
   },
 ];
 
