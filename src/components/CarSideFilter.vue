@@ -12,7 +12,7 @@
 
 <script>
 import { ref, watch } from "vue";
-import FilterSelectItem from "./FilterSelectItem.vue";
+import FilterSelectItem from "./UI/FilterSelectItem.vue";
 
 export default {
   name: "CarSideFilter",

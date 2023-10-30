@@ -11,7 +11,7 @@
 <script>
 import { ref, watch, inject } from "vue";
 import { getRegions } from "../api/countryApi";
-import FilterSelectItem from "./FilterSelectItem.vue";
+import FilterSelectItem from "./UI/FilterSelectItem.vue";
 
 export default {
   name: "RegionFilter",

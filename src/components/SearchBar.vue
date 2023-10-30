@@ -22,7 +22,6 @@
         @input="handleInput"
         @click:prepend-inner="getCountriesBySearchFromAPI(search)"
         @click:clear="getCountriesBySearchFromAPI(search)"
-        class="tw-mr-3"
       ></v-text-field>
     </v-responsive>
   </form>

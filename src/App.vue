@@ -23,22 +23,13 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import ToastError from "./components/ToastError.vue";
 
-export default {
-  components: {
-    ToastError,
-  },
-  setup() {
-    const navRoutes = ref([
-      { path: "/", name: "Home" },
-      { path: "/about", name: "About" },
-      { path: "/login", name: "Login" },
-    ]);
-
-    return { navRoutes };
-  },
-};
+const navRoutes = ref([
+  { path: "/", name: "Home" },
+  { path: "/about", name: "About" },
+  { path: "/login", name: "Login" },
+]);
 </script>
