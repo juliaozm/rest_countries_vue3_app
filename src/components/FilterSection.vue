@@ -1,11 +1,12 @@
 <template>
   <div class="tw-flex tw-items-center tw-justify-between tw-px-4">
     <slot></slot>
-    <button v-if="width < 768" @click="setFilterOpen">
-      <AdjustmentsHorizontalIcon
-        class="tw-h-11 tw-w-11 tw-text-violet-700 tw-mr-1 tw-border tw-border-violet-300 tw-p-1 tw-rounded hover:tw-bg-violet-800 hover:tw-text-gray-50 tw-transition-all active:tw-bg-violet-900"
-      />
-    </button>
+    <ButtonIcon
+      v-if="width < 768"
+      :icon="AdjustmentsHorizontalIcon"
+      :class="'tw-ml-3'"
+      @click="setFilterOpen"
+    />
   </div>
 
   <div
@@ -35,7 +36,8 @@
 import { ref, inject } from "vue";
 import RegionFilter from "../components/RegionFilter.vue";
 import CarSideFilter from "../components/CarSideFilter.vue";
-import CheckedFilter from "../components/CheckedFilter.vue";
+import CheckedFilter from "../components/UI/CheckedFilter.vue";
+import ButtonIcon from "./UI/ButtonIcon.vue";
 import { useDisplay } from "vuetify";
 import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/outline";
 
