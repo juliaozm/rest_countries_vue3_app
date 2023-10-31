@@ -25,6 +25,8 @@
       :lang="translatedLang"
       :language="language"
     />
+
+    <GallerySection v-if="country" :country="country" />
   </div>
 </template>
 <script>
@@ -32,10 +34,11 @@ import { ref, computed, inject } from "vue";
 import { getCountryByCode } from "../api/countryApi";
 import { languageCodes } from "../assets/data/languageCodes.js";
 import TranslateForm from "../components/TranslateForm.vue";
+import GallerySection from "../components/GallerySection.vue";
 
 export default {
   name: "CountryViewInfo",
-  components: { TranslateForm },
+  components: { TranslateForm, GallerySection },
   props: {
     id: String,
     required: true,

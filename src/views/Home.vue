@@ -15,7 +15,7 @@
   </section>
 
   <section v-if="errorList">{{ errorList }}</section>
-  <section>
+  <section v-else>
     <Suspense>
       <template #default>
         <CountryListItems :countries="filteredChunk" />
