@@ -4,7 +4,11 @@ import Home from "../views/Home.vue";
 const routes = [
   { path: "/", name: "Home", component: Home },
   { path: "/about", name: "About" },
-  { path: "/login", name: "Login" },
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("../views/AuthView.vue"),
+  },
   {
     path: "/:cca2",
     component: () => import("../views/CountryView.vue"),
