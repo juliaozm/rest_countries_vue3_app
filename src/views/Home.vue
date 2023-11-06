@@ -21,7 +21,7 @@
         <CountryListItems :countries="filteredChunk" />
       </template>
       <template #fallback>
-        <p>Loading countries...</p>
+        <LoaderItem text="Loading countries..."></LoaderItem>
       </template>
     </Suspense>
     <div class="tw-w-full tw-flex tw-justify-center tw-items-center tw-p-4">
@@ -40,6 +40,7 @@ import useCountryFilters from "../composable/useCountryFilters";
 import SearchBar from "../components/SearchBar.vue";
 import FilterSection from "../components/FilterSection.vue";
 import ButtonPrimary from "../components/UI/ButtonPrimary.vue";
+import LoaderItem from "../components/UI/LoaderItem.vue";
 const CountryListItems = defineAsyncComponent(() =>
   import("../components/CountryListItems.vue")
 );

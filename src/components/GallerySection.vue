@@ -5,9 +5,7 @@
     <GalleryItem v-for="url in photoUrls" :key="url" :url="url" />
   </section>
   <div ref="trigger" class="tw-h-8 tw-bg-transparent"></div>
-  <p v-if="isLoading" class="tw-italic tw-text-center">
-    The photos from {{ searchText }} are fetching...
-  </p>
+  <LoaderItem v-if="isLoading" :text="loadingText" />
   <p v-if="!isLoading && page > totalPages" class="tw-italic tw-text-center">
     No more photos found
   </p>
@@ -17,6 +15,7 @@
 import { ref, computed, inject } from "vue";
 import { useIntersectionObserver } from "@vueuse/core";
 import { getPhotos } from "../api/unsplashApi.js";
+import LoaderItem from "../components/UI/LoaderItem.vue";
 import GalleryItem from "../components/GalleryItem.vue";
 
 const props = defineProps({
@@ -35,6 +34,10 @@ const errorNotification = inject("errorNotification");
 const searchText = computed(() => {
   return props.country.name.common;
 });
+
+const loadingText = computed(
+  () => `The photos from ${searchText.value} are fetching...`
+);
 
 const getPhotoURLs = async (tag) => {
   errorList.value = "";
