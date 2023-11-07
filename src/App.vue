@@ -4,6 +4,7 @@
       <nav class="tw-flex tw-border-b">
         <div v-for="route in navRoutes" class="tw-mr-1">
           <router-link
+            v-if="!route.requireAuth || (route.requireAuth && user)"
             :to="route.path"
             class="tw-bg-white tw-inline-block tw-py-2 tw-px-4 tw-text-gray-500 hover:tw-text-violet-800 tw-font-semibold"
             :class="{
@@ -24,12 +25,24 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch, computed, provide } from "vue";
 import ToastError from "./components/ToastError.vue";
+import useAuthentification from "./composable/useAuthentification";
+
+const user = useAuthentification();
+provide("user", user);
+
+const authNameRoute = computed(() => {
+  return !user.value ? "Login" : "Log Out";
+});
 
 const navRoutes = ref([
   { path: "/", name: "Home" },
-  { path: "/about", name: "About" },
-  { path: "/login", name: "Login" },
+  {
+    path: "/my_countries",
+    name: "My countries",
+    requireAuth: true,
+  },
+  { path: "/authentication", name: authNameRoute },
 ]);
 </script>

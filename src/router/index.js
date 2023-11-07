@@ -1,17 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
 
 const routes = [
-  { path: "/", name: "Home", component: Home },
-  { path: "/about", name: "About" },
+  { path: "/", name: "Home", component: () => import("../views/Home.vue") },
   {
-    path: "/login",
+    path: "/my_countries",
+    name: "My Countries",
+    component: () => import("../views/MyCountries.vue"),
+  },
+  {
+    path: "/authentication",
     name: "Login",
     component: () => import("../views/AuthView.vue"),
   },
   {
     path: "/:cca2",
     component: () => import("../views/CountryView.vue"),
+    props: true,
   },
 ];
 
