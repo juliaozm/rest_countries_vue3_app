@@ -1,46 +1,65 @@
 <template>
-  <v-sheet class="tw-w-full sm:tw-container md:tw-w-1/2 lg:tw-w-1/3 tw-mx-auto">
-    <v-form ref="form" fast-fail @submit.prevent="validate">
-      <v-text-field
-        v-model="email"
-        label="Email"
-        :rules="emailRules"
-        required
-        variant="outlined"
-        color="primary"
-        item-color="primary"
-        base-color="primary"
-      ></v-text-field>
+  <div class="tw-flex tw-flex-col tw-items-center tw-mt-6 tw-p-4">
+    <p class="tw-my-4 tw-text-2xl tw-font-bold">Welcome back</p>
+    <v-sheet
+      class="tw-w-full sm:tw-container md:tw-w-1/2 lg:tw-w-1/3 tw-mx-auto"
+    >
+      <v-form ref="form" fast-fail @submit.prevent="validate">
+        <v-text-field
+          v-model="email"
+          label="Email"
+          :rules="emailRules"
+          required
+          variant="outlined"
+          color="primary"
+          item-color="primary"
+          base-color="primary"
+        ></v-text-field>
 
-      <v-text-field
-        v-model="password"
-        label="Password"
-        :rules="passwordRules"
-        required
-        variant="outlined"
-        color="primary"
-        item-color="primary"
-        base-color="primary"
-      ></v-text-field>
+        <v-text-field
+          v-model="password"
+          label="Password"
+          :rules="passwordRules"
+          required
+          variant="outlined"
+          color="primary"
+          item-color="primary"
+          base-color="primary"
+        ></v-text-field>
 
-      <v-btn
-        type="submit"
-        variant="tonal"
-        color="primary"
-        item-color="primary"
-        base-color="primary"
-        block
-        class="mt-2"
-        :disabled="isLoading"
-        >LOGIN</v-btn
+        <v-btn
+          type="submit"
+          variant="tonal"
+          color="primary"
+          item-color="primary"
+          base-color="primary"
+          block
+          class="tw-mt-2"
+          :disabled="isLoading"
+          >LOGIN</v-btn
+        >
+      </v-form>
+    </v-sheet>
+    <p class="tw-my-3">
+      Don't have an account?
+      <button
+        @click="props.handleClick"
+        class="tw-text-violet-500 hover:tw-text-violet-600"
       >
-    </v-form>
-  </v-sheet>
+        Sign up
+      </button>
+    </p>
+  </div>
 </template>
 <script setup>
 import { ref, inject } from "vue";
-import app from "../../firebase.config";
+import { app } from "../../firebase.config";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import router from "../router/index";
+
+const props = defineProps({
+  handleClick: Function,
+});
 
 const email = ref("");
 const emailRules = [
@@ -86,7 +105,7 @@ const login = () => {
       const { email, uid } = userCredential.user;
       user.uid.value = uid;
       user.email.value = email;
-      console.log(user);
+      router.push("/");
     })
     .catch((error) => {
       const errorCode = error.code;
