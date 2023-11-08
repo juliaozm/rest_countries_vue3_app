@@ -58,6 +58,11 @@
         Support translation
       </div>
     </div>
+
+    <div class="tw-flex tw-mt-4">
+      <AddToVisitedButton :country="props.country" />
+      <AddToWantedButton :country="props.country" />
+    </div>
   </div>
   <hr class="tw-text-gray-200 md:tw-hidden" />
 </template>
@@ -76,6 +81,8 @@ import {
   CheckAllIcon,
   OpenInNewIcon,
 } from "mdi-vue3";
+import AddToVisitedButton from "./AddToVisitedButton.vue";
+import AddToWantedButton from "./AddToWantedButton.vue";
 
 const props = defineProps({
   country: Object,
