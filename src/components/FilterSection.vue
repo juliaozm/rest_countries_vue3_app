@@ -4,7 +4,7 @@
     <ButtonIcon
       v-if="width < 768"
       :icon="AdjustmentsHorizontalIcon"
-      :class="'tw-ml-3'"
+      :class="'tw-ml-3 tw-h-12 tw-w-12'"
       @click="setFilterOpen"
     />
   </div>

@@ -15,7 +15,7 @@
       ></v-textarea>
       <ButtonIcon
         :icon="loading ? DotsCircleIcon : TranslateVariantIcon"
-        :class="'tw-self-center tw-mb-6 tw-mr-3 tw-ml-3'"
+        :class="'tw-self-center tw-mb-6 tw-mr-3 tw-ml-3 tw-h-11 tw-w-11'"
         :disabled="loading"
         @click="getTranslated"
       />
