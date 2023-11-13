@@ -5,7 +5,7 @@ const routes = [
   {
     path: "/my_countries",
     name: "My Countries",
-    component: () => import("../views/MyCountries.vue"),
+    component: () => import("../views/MyCountriesView.vue"),
   },
   {
     path: "/authentication",
