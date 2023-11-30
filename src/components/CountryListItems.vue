@@ -1,18 +1,16 @@
 <template>
-  <div class="tw-mt-4">
-    <ul class="tw-w-full tw-flex tw-flex-wrap tw-align-top tw-mx-auto">
-      <li
-        v-for="(country, index) in countries"
-        class="tw-w-full sm:tw-w-1/2 md:tw-w-1/3"
-        :class="{
-          'md:tw-border-r': !isLastColumn(index),
-          'md:tw-border-b': !isLastRow(index),
-        }"
-      >
-        <CountryItem :country="country" :key="country.cca2" />
-      </li>
-    </ul>
-  </div>
+  <ul class="tw-w-full tw-flex tw-flex-wrap tw-align-top tw-mx-auto">
+    <li
+      v-for="(country, index) in countries"
+      class="tw-w-full sm:tw-w-1/2 md:tw-w-1/3"
+      :class="{
+        'md:tw-border-r': !isLastColumn(index),
+        'md:tw-border-b': !isLastRow(index),
+      }"
+    >
+      <CountryItem :country="country" :key="country.cca2" />
+    </li>
+  </ul>
 </template>
 
 <script>

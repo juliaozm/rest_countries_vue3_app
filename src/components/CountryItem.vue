@@ -16,9 +16,9 @@
             {{ props.country.name.common }}
           </h3>
           <p v-if="capitals" class="tw-flex tw-items-baseline">
-            <MapPinIcon class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1" />{{
-              capitals
-            }}
+            <MapMarkerOutlineIcon
+              class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1"
+            />{{ capitals }}
           </p>
         </div>
       </div>
@@ -41,16 +41,16 @@
         v-if="subregion"
         class="tw-text tw-p-1 tw-rounded-lg tw-flex tw-items-center"
       >
-        <GlobeAsiaAustraliaIcon
-          class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1"
-        />{{ subregion }}
+        <EarthIcon class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1" />{{
+          subregion
+        }}
       </p>
       <p class="tw-p-1 tw-text tw-flex tw-items-center">
         <CarOutlineIcon class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1" />
         {{ props.country.car.side === "right" ? "Right" : "Left" }}-hand traffic
       </p>
       <p class="tw-p-1 tw-text tw-flex tw-items-center">
-        <LanguageIcon class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1" />
+        <TranslateIcon class="tw-h-4 tw-w-4 tw-text-gray-500 tw-mr-1" />
         {{ languages }}
       </p>
       <div class="tw-p-1 tw-text tw-flex tw-items-center" v-if="translatedLang">
@@ -71,15 +71,13 @@
 import { computed, inject } from "vue";
 import { languageCodes } from "../assets/data/languageCodes.js";
 import {
-  MapPinIcon,
-  GlobeAsiaAustraliaIcon,
-  LanguageIcon,
-} from "@heroicons/vue/24/outline";
-import {
   ShieldCheckOutlineIcon,
   CarOutlineIcon,
   CheckAllIcon,
   OpenInNewIcon,
+  TranslateIcon,
+  MapMarkerOutlineIcon,
+  EarthIcon,
 } from "mdi-vue3";
 import AddToVisitedButton from "./AddToVisitedButton.vue";
 import AddToWantedButton from "./AddToWantedButton.vue";

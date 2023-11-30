@@ -20,21 +20,30 @@
       kilometres.
     </p>
 
-    <TranslateForm
-      v-if="translatedLang != 'en' && translatedLang != 'n/a'"
-      :lang="translatedLang"
-      :language="language"
-    />
-
-    <GallerySection v-if="country" :country="country" />
+    <Suspense>
+      <template #default>
+        <section>
+          <TranslateForm
+            v-if="translatedLang != 'en' && translatedLang != 'n/a'"
+            :lang="translatedLang"
+            :language="language"
+          />
+          <GallerySection v-if="country" :country="country" />
+        </section>
+      </template>
+    </Suspense>
   </div>
 </template>
 <script>
-import { ref, computed, inject } from "vue";
+import { ref, computed, inject, Suspense, defineAsyncComponent } from "vue";
 import { getCountryByCode } from "../api/countryApi";
 import { languageCodes } from "../assets/data/languageCodes.js";
-import TranslateForm from "../components/TranslateForm.vue";
-import GallerySection from "../components/GallerySection.vue";
+const TranslateForm = defineAsyncComponent(() =>
+  import("../components/TranslateForm.vue")
+);
+const GallerySection = defineAsyncComponent(() =>
+  import("../components/GallerySection.vue")
+);
 
 export default {
   name: "CountryViewInfo",
