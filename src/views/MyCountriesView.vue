@@ -1,62 +1,50 @@
 <template>
-  <LoaderItem v-if="isLoading" :text="loadingText" />
-  <section v-else>
-    <TravelGoals
-      v-if="wantedCountriesCount > 0 && visitedCountriesCount > 0"
-      :visitedCountriesCount="visitedCountriesCount"
-      :wantedCountriesCount="wantedCountriesCount"
-    />
-    <div class="lg:tw-container lg:tw-mx-auto tw-px-4 tw-flex">
-      <div class="tw-flex-col tw-w-1/2">
-        <h2 class="tw-font-bold tw-text-lg tw-text-center">
-          Visited countries:
-        </h2>
-        <Suspense>
-          <template #default
-            ><MyCountriesList
-              :myCountries="visitedCountries"
-              :error="visitedCountriesError"
-              :count="visitedCountriesCount"
-          /></template>
-          <template #fallback> Loading visited countries... </template>
-        </Suspense>
-      </div>
-
-      <div class="tw-flex-col tw-w-1/2">
-        <h2 class="tw-font-bold tw-text-lg tw-text-center">
-          Wanted countries:
-        </h2>
-        <Suspense>
-          <template #default
-            ><MyCountriesList
-              :myCountries="wantedCountries"
-              :error="wantedCountriesError"
-              :count="wantedCountriesCount"
-          /></template>
-          <template #fallback> Loading visited countries... </template>
-        </Suspense>
-      </div>
-    </div>
-  </section>
+  <Suspense>
+    <template #default>
+      <section>
+        <TravelGoals
+          v-if="wantedCountriesCount > 0 && visitedCountriesCount > 0"
+          :visitedCountriesCount="visitedCountriesCount"
+          :wantedCountriesCount="wantedCountriesCount"
+        />
+        <div class="lg:tw-container lg:tw-mx-auto tw-px-4 tw-flex">
+          <MyCountriesList
+            title="Visited countries:"
+            :myCountries="visitedCountries"
+            :error="visitedCountriesError"
+            :count="visitedCountriesCount"
+          />
+          <MyCountriesList
+            title="Wanted countries:"
+            :myCountries="wantedCountries"
+            :error="wantedCountriesError"
+            :count="wantedCountriesCount"
+          />
+        </div>
+      </section>
+    </template>
+    <template #fallback>
+      <LoaderItem text="Loading travel goals" />
+    </template>
+  </Suspense>
 </template>
 <script setup>
 import { ref, onMounted, inject, computed, defineAsyncComponent } from "vue";
 import { getCountries } from "../api/firebase/getCountries.js";
+import LoaderItem from "../components/UI/LoaderItem.vue";
+const TravelGoals = defineAsyncComponent(() =>
+  import("../components/TravelGoals.vue")
+);
 const MyCountriesList = defineAsyncComponent(() =>
   import("../components/MyCountriesList.vue")
 );
-import TravelGoals from "../components/TravelGoals.vue";
-import LoaderItem from "../components/UI/LoaderItem.vue";
 
-const providedUser = inject("user");
-const uid = computed(() => providedUser?.value?.uid);
-
+const user = inject("user");
+const uid = computed(() => user.currentUser?.uid);
 const visitedCountries = ref({});
 const visitedCountriesError = ref("");
 const wantedCountries = ref({});
 const wantedCountriesError = ref("");
-const isLoading = ref(false);
-const loadingText = ref("The lists of countries are fetching...");
 
 const fetchCountries = async (collection, targetRef, errorRef) => {
   try {
@@ -72,16 +60,12 @@ const fetchCountries = async (collection, targetRef, errorRef) => {
     console.error(`Error fetching ${collection} countries:`, error);
   }
 };
+
 onMounted(async () => {
-  isLoading.value = true;
   Promise.all([
     fetchCountries("visitedCountries", visitedCountries, visitedCountriesError),
     fetchCountries("wantedCountries", wantedCountries, wantedCountriesError),
   ]);
-
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 1000);
 });
 
 const visitedCountriesCount = computed(() => visitedCountries.value.length);

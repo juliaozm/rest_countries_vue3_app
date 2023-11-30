@@ -28,8 +28,8 @@ const props = defineProps({
   country: Object,
 });
 
-const providedUser = inject("user");
-const uid = computed(() => providedUser?.value?.uid);
+const user = inject("user");
+const uid = computed(() => user.currentUser?.uid);
 const msgAlert = ref(false);
 const msg = ref("");
 const isLoading = ref(false);

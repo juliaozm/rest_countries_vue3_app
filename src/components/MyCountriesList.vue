@@ -1,5 +1,8 @@
 <template>
-  <section>
+  <div class="tw-flex-col tw-w-1/2">
+    <h2 class="tw-font-bold tw-text-lg tw-text-center">
+      {{ props.title }}
+    </h2>
     <div v-if="props.error || props.count === 0">
       <p class="tw-text-center">No countries yet</p>
     </div>
@@ -19,11 +22,12 @@
         </li>
       </ul>
     </div>
-  </section>
+  </div>
 </template>
 <script setup>
 const props = defineProps({
   myCountries: Object,
+  title: String,
   error: String,
   count: Number,
 });
