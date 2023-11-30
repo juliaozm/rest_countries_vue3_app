@@ -3,7 +3,7 @@
     <slot></slot>
     <ButtonIcon
       v-if="width < 768"
-      :icon="AdjustmentsHorizontalIcon"
+      :icon="TuneIcon"
       :class="'tw-ml-3 tw-h-12 tw-w-12'"
       @click="setFilterOpen"
     />
@@ -39,7 +39,7 @@ import CarSideFilter from "../components/CarSideFilter.vue";
 import CheckedFilter from "../components/UI/CheckedFilter.vue";
 import ButtonIcon from "./UI/ButtonIcon.vue";
 import { useDisplay } from "vuetify";
-import { AdjustmentsHorizontalIcon } from "@heroicons/vue/24/outline";
+import { TuneIcon } from "mdi-vue3";
 
 const emit = defineEmits([
   "subregionFilterChange",

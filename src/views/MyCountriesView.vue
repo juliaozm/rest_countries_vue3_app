@@ -1,13 +1,15 @@
 <template>
   <Suspense>
     <template #default>
-      <section>
+      <div>
         <TravelGoals
           v-if="wantedCountriesCount > 0 && visitedCountriesCount > 0"
           :visitedCountriesCount="visitedCountriesCount"
           :wantedCountriesCount="wantedCountriesCount"
         />
-        <div class="lg:tw-container lg:tw-mx-auto tw-px-4 tw-flex">
+        <section
+          class="lg:tw-w-[900px] lg:tw-mx-auto tw-px-4 tw-flex tw-flex-col min-[375px]:tw-flex-row"
+        >
           <MyCountriesList
             title="Visited countries:"
             :myCountries="visitedCountries"
@@ -20,8 +22,8 @@
             :error="wantedCountriesError"
             :count="wantedCountriesCount"
           />
-        </div>
-      </section>
+        </section>
+      </div>
     </template>
     <template #fallback>
       <LoaderItem text="Loading travel goals" />

@@ -14,22 +14,22 @@
     </FilterSection>
   </section>
 
-  <section v-if="errorList">{{ errorList }}</section>
-  <section v-else>
-    <Suspense>
-      <template #default>
+  <section class="tw-mt-4 tw-px-4" v-if="errorList">{{ errorList }}</section>
+  <Suspense v-else>
+    <template #default class="tw-mt-4 tw-px-4">
+      <section>
         <CountryListItems :countries="filteredChunk" />
-      </template>
-      <template #fallback>
-        <LoaderItem text="Loading countries..."></LoaderItem>
-      </template>
-    </Suspense>
-    <div class="tw-w-full tw-flex tw-justify-center tw-items-center tw-p-4">
-      <ButtonPrimary v-if="currentPage < pageCount" :handleClick="loadMore">
-        Load more
-      </ButtonPrimary>
-    </div>
-  </section>
+        <div class="tw-w-full tw-flex tw-justify-center tw-items-center tw-p-4">
+          <ButtonPrimary v-if="currentPage < pageCount" :handleClick="loadMore">
+            Load more
+          </ButtonPrimary>
+        </div>
+      </section>
+    </template>
+    <template #fallback class="tw-mt-4 tw-px-4">
+      <LoaderItem text="Loading countries..."></LoaderItem>
+    </template>
+  </Suspense>
 </template>
 
 <script setup>

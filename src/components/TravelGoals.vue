@@ -13,11 +13,13 @@
         </p>
         <p>countries so far</p>
       </div>
+
       <div class="tw-flex tw-flex-col tw-items-center tw-mx-8 tw-my-4">
         <p>It's</p>
         <p class="tw-font-bold tw-text-lg">{{ visitedOfTheWorld }}%</p>
         <p>of the world!</p>
       </div>
+
       <div class="tw-flex tw-flex-col tw-items-center tw-mx-8 tw-my-4">
         <p>My goal is achieved by</p>
         <p class="tw-font-bold tw-text-lg">
