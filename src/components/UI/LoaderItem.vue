@@ -21,6 +21,9 @@
 </template>
 <script setup>
 const props = defineProps({
-  text: String,
+  text: {
+    type: String,
+    default: "Loading...",
+  },
 });
 </script>

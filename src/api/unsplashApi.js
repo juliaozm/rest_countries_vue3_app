@@ -19,9 +19,17 @@ unsplashApi.interceptors.response.use(
 
 export const getPhotos = async (tag, page = 1) => {
   try {
-    const res = await unsplashApi.get(
-      `search/photos?page=${page}&per_page=${20}&query=${tag}&orientation=portrait`
-    );
+    const res = await unsplashApi.get(`/search/photos`, {
+      params: {
+        query: tag,
+        page: page,
+        per_page: 10,
+        orientation: "portrait",
+        w: 300,
+      },
+    });
+
+
     return res.data;
   } catch (error) {
     throw new Error("Failed to fetch photos. Please try again later");

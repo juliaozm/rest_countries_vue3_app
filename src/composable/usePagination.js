@@ -2,7 +2,7 @@ import { ref, computed } from "vue";
 
 const usePagination = (total) => {
   const currentPage = ref(1);
-  const itemsPerPage = ref(12);
+  const itemsPerPage = ref(6);
 
   const pageCount = computed(() => {
     return Math.ceil(total.value / itemsPerPage.value);
