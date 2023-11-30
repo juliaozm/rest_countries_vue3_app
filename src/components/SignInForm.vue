@@ -53,9 +53,9 @@
 </template>
 <script setup>
 import { ref, inject } from "vue";
-import { app } from "../../firebase.config";
+import { appAuth } from "../../firebase.config";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import router from "../router/index";
+import { router } from "../router";
 
 const props = defineProps({
   handleClick: Function,
@@ -96,7 +96,7 @@ const user = {
 const errorList = ref("");
 const errorNotification = inject("errorNotification");
 
-const auth = getAuth(app);
+const auth = getAuth(appAuth);
 const login = () => {
   isLoading.value = true;
   signInWithEmailAndPassword(auth, email.value, password.value)

@@ -1,11 +1,11 @@
 <template>
-  <section v-if="providedUser">
+  <section v-if="user.currentUser">
     <LogoutForm :email="userEmail"></LogoutForm>
   </section>
-  <section v-if="!providedUser && registered">
+  <section v-if="!user.currentUser && registered">
     <SignInForm :handleClick="() => (registered = false)" />
   </section>
-  <section v-if="!providedUser && !registered">
+  <section v-if="!user.currentUser && !registered">
     <SignUpForm :handleClick="() => (registered = true)" />
   </section>
 </template>
@@ -16,7 +16,8 @@ import SignInForm from "../components/SignInForm.vue";
 import SignUpForm from "../components/SignUpForm.vue";
 import LogoutForm from "../components/LogoutForm.vue";
 
-const providedUser = inject("user");
-const userEmail = computed(() => providedUser.value.email);
+const user = inject("user");
+const userEmail = computed(() => user.currentUser?.email);
+
 const registered = ref(true);
 </script>

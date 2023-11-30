@@ -22,8 +22,9 @@
 
 <script setup>
 import { ref, inject } from "vue";
-import { app } from "../../firebase.config";
+import { appAuth } from "../../firebase.config";
 import { getAuth, signOut } from "firebase/auth";
+import { router } from "../router";
 
 const props = defineProps({
   email: String,
@@ -33,12 +34,13 @@ const isLoading = ref(false);
 const errorList = ref("");
 const errorNotification = inject("errorNotification");
 
-const auth = getAuth(app);
+const auth = getAuth(appAuth);
 const logout = () => {
   isLoading.value = true;
   signOut(auth)
     .then(() => {
       console.log("Your have been logout");
+      router.push("/");
     })
     .catch((error) => {
       const errorCode = error.code;
